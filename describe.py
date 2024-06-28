@@ -21,7 +21,7 @@ def calculate_table_values(file_data):
             
             min_value = my_min(file_data[key])
             max_value = my_max(file_data[key])
-            
+        
             _sorted_tab = file_data[key]
             _sorted_tab.sort()
             

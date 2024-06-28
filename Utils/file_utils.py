@@ -29,6 +29,20 @@ def parse_file(file):
                 data[key].append(line_data[index])
     return data
 
+def transform_file_data(file_data):
+    '''
+        Transform a file data like : {First Name: [value1, value2, value3, ...], Astronomy: [value1, value2, value3, ...]}
+        In a file data like : [{First Name: value, Astronomy: value}, {First Name: value, Astronomy: value}]
+    '''
+    new_file_data = []
+
+
+    for index in range(my_len(file_data['Index'])):
+        obj = {key: file_data[key][index] for key in file_data}
+        new_file_data.append(obj)
+    
+    return new_file_data
+
 def parse_file_data_by_house(file_data):
     data = {
         "Slytherin": [],

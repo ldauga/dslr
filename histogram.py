@@ -19,8 +19,6 @@ else:
             
             houses_data = parse_file_data_by_house(file_data)
             
-            print(sum(file_data['Arithmancy']) / len(file_data['Arithmancy']))
-            
             gryffindor_data = get_houses_std_value(houses_data["Gryffindor"])
             ravenclaw_data = get_houses_std_value(houses_data["Ravenclaw"])
             slytherin_data = get_houses_std_value(houses_data["Slytherin"])
@@ -47,7 +45,7 @@ else:
             ax4.set_title("Hufflepuff Std Courses Grade")
 
             plt.show()
-            
+
 
             
             
