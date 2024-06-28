@@ -20,7 +20,7 @@ def my_max(list):
 
 def my_len(list):
     index = 0
-    for item in list:
+    for _ in list:
         index+=1
     return index
 

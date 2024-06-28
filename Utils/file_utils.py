@@ -1,6 +1,7 @@
 from contextlib import contextmanager
+import math
 
-from Utils.my_math import my_len
+from Utils.my_math import my_len, my_sum
 
 
 @contextmanager
@@ -42,6 +43,8 @@ def parse_file_data_by_house(file_data):
 
 def get_houses_std_value(house_data):
     mean_data = {key: 0 for key in house_data[0]}
+
+    std_data = {}
     
     for value in house_data:
         for key in value:
@@ -49,4 +52,14 @@ def get_houses_std_value(house_data):
     
     for key in mean_data:
         mean_data[key] /= my_len(house_data)
-    return mean_data
+
+    for key in mean_data:
+        _variance = my_sum([(item[key]-mean_data[key])**2 for item in house_data]) / my_len(house_data)
+        std_data[key] = math.sqrt(_variance / (my_len(house_data)-1))
+
+    
+
+
+
+
+    return std_data
