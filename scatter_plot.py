@@ -16,7 +16,8 @@ class ScatterPlotCourses:
     def __init__(self, houses_data, keys):
         self.houses_data = houses_data
         self.keys = keys
-        self.index = 0
+        self.indexKeyOne = 0
+        self.indexKeyTwo = 1
         self.fig, self.ax = plt.subplots()
         self.scatterSlytherin = None
         self.scatterRavenclaw = None
@@ -26,7 +27,8 @@ class ScatterPlotCourses:
         self.create_buttons()
 
     def update_plot(self):
-        key_selected = self.keys[self.index]
+        key1_selected = self.keys[self.indexKeyOne]
+        key2_selected = self.keys[self.indexKeyTwo]
 
         if self.scatterSlytherin:
             self.scatterSlytherin.remove()
@@ -37,8 +39,11 @@ class ScatterPlotCourses:
         if self.scatterHufflepuff:
             self.scatterHufflepuff.remove()
 
-        min_value = None
-        max_value = None
+        key1_data_min_value = None
+        key1_data_max_value = None
+        
+        key2_data_min_value = None
+        key2_data_max_value = None
 
         for house, data, color in [
             ("Slytherin", self.houses_data["Slytherin"], "green"),
@@ -46,147 +51,92 @@ class ScatterPlotCourses:
             ("Gryffindor", self.houses_data["Gryffindor"], "red"),
             ("Hufflepuff", self.houses_data["Hufflepuff"], "yellow"),
         ]:
-            x_data = [i for i in range(my_len(data))]
-            y_data = [item[key_selected] for item in data]
+            key2_data = [item[key2_selected] for item in data]
+            key1_data = [item[key1_selected] for item in data]
 
-            if min_value == None or my_min(y_data) < min_value:
-                min_value = my_min(y_data)
-            if max_value == None or my_max(y_data) > max_value:
-                max_value = my_max(y_data)
+            if key1_data_min_value == None or my_min(key1_data) < key1_data_min_value:
+                key1_data_min_value = my_min(key1_data)
+            if key1_data_max_value == None or my_max(key1_data) > key1_data_max_value:
+                key1_data_max_value = my_max(key1_data)
+                
+            if key2_data_min_value == None or my_min(key2_data) < key2_data_min_value:
+                key2_data_min_value = my_min(key2_data)
+            if key2_data_max_value == None or my_max(key2_data) > key2_data_max_value:
+                key2_data_max_value = my_max(key2_data)
 
             if house == "Slytherin":
                 self.scatterSlytherin = self.ax.scatter(
-                    x_data, y_data, label=house, color=color
+                    key2_data, key1_data, label=house, color=color
                 )
             if house == "Ravenclaw":
                 self.scatterRavenclaw = self.ax.scatter(
-                    x_data, y_data, label=house, color=color
+                    key2_data, key1_data, label=house, color=color
                 )
             if house == "Gryffindor":
                 self.scatterGryffindor = self.ax.scatter(
-                    x_data, y_data, label=house, color=color
+                    key2_data, key1_data, label=house, color=color
                 )
             if house == "Hufflepuff":
                 self.scatterHufflepuff = self.ax.scatter(
-                    x_data, y_data, label=house, color=color
+                    key2_data, key1_data, label=house, color=color
                 )
-            self.ax.legend()
-            self.ax.set_title(f"Scatter plot for {key_selected} of each houses")
-        self.ax.set_ylim(
-            min_value - abs(max_value) * 0.1,
-            max_value + abs(max_value) * 0.1,
+        self.ax
+        self.ax.legend()
+        self.ax.set_title(f"Scatter plot for {key1_selected} by {key2_selected} of each houses")
+        self.ax.set_xlim(
+            key2_data_min_value - abs(key2_data_max_value)*.1,
+            key2_data_max_value + abs(key2_data_max_value)*.1
         )
+        self.ax.set_ylim(
+            key1_data_min_value - abs(key1_data_max_value)*.1,
+            key1_data_max_value + abs(key1_data_max_value)*.1
+        )
+        self.ax.set_xlabel(key2_selected)
+        self.ax.set_ylabel(key1_selected)
         self.fig.canvas.draw_idle()
 
-    def next_key(self, event):
-        self.index = (self.index + 1) % len(self.keys)
+    def next_key1(self, event):
+        self.indexKeyOne = (self.indexKeyOne + 1) % len(self.keys)
+        if self.indexKeyOne == self.indexKeyTwo:
+            self.next_key1(event=None)
         self.update_plot()
 
-    def prev_key(self, event):
-        self.index = (self.index - 1) % len(self.keys)
+    def prev_key1(self, event):
+        self.indexKeyOne = (self.indexKeyOne - 1) % len(self.keys)
+        if self.indexKeyOne == self.indexKeyTwo:
+            self.prev_key1(event=None)
+        self.update_plot()
+        
+    def next_key2(self, event):
+        self.indexKeyTwo = (self.indexKeyTwo + 1) % len(self.keys)
+        if self.indexKeyOne == self.indexKeyTwo:
+            self.next_key2(event=None)
+        self.update_plot()
+
+    def prev_key2(self, event):
+        self.indexKeyTwo = (self.indexKeyTwo - 1) % len(self.keys)
+        if self.indexKeyOne == self.indexKeyTwo:
+            self.prev_key2(event=None)
         self.update_plot()
 
     def create_buttons(self):
-        axprev = plt.axes([0.7, 0.01, 0.1, 0.075])
-        axnext = plt.axes([0.81, 0.01, 0.1, 0.075])
-
-        self.bnext = Button(axnext, "Next")
-        self.bnext.on_clicked(self.next_key)
-
-        self.bprev = Button(axprev, "Prev")
-        self.bprev.on_clicked(self.prev_key)
-
-
-class ScatterPlotHouses:
-    def __init__(self, houses_data):
-        self.houses_data = houses_data
-        self.display_arithmancy = False
-        self.index = 0
-        self.fig, self.ax = plt.subplots()
-        self.scatter = None
-        self.update_plot()
-        self.create_buttons()
-
-    def update_plot(self):
-        house_selected = [
-            "Slytherin",
-            "Ravenclaw",
-            "Gryffindor",
-            "Hufflepuff",
-        ][self.index]
-
-        if self.scatter:
-            self.scatter.remove()
-
-        min_value = None
-        max_value = None
-
-        data = self.houses_data[house_selected]
+        axprev1 = plt.axes([0.1, 0.01, 0.1, 0.075])
+        axnext1 = plt.axes([0.21, 0.01, 0.1, 0.075])
         
-        x_data = [i for i in range(my_len(data) * (my_len(data[0]) - (1 if not self.display_arithmancy else 0)))]
-        y_data = []
-        for item in data:
-            for key in item:
-                if key == 'Arithmancy' and not self.display_arithmancy:
-                    pass
-                else:
-                    y_data.append(item[key])
+        axprev2 = plt.axes([0.7, 0.01, 0.1, 0.075])
+        axnext2 = plt.axes([0.81, 0.01, 0.1, 0.075])
 
-        if min_value == None or my_min(y_data) < min_value:
-            min_value = my_min(y_data)
-        if max_value == None or my_max(y_data) > max_value:
-            max_value = my_max(y_data)
+        self.bnext1 = Button(axnext1, "Next Key One")
+        self.bnext1.on_clicked(self.next_key1)
 
-        if house_selected == "Slytherin":
-            self.scatter = self.ax.scatter(
-                x_data, y_data, label=house_selected, color="green"
-            )
-        if house_selected == "Ravenclaw":
-            self.scatter = self.ax.scatter(
-                x_data, y_data, label=house_selected, color="blue"
-            )
-        if house_selected == "Gryffindor":
-            self.scatter = self.ax.scatter(
-                x_data, y_data, label=house_selected, color="red"
-            )
-        if house_selected == "Hufflepuff":
-            self.scatter = self.ax.scatter(
-                x_data, y_data, label=house_selected, color="yellow"
-            )
-            self.ax.legend()
-            self.ax.set_title(f"Scatter plot for {house_selected} of each houses")
-        self.ax.set_ylim(
-            min_value - abs(max_value) * 0.1,
-            max_value + abs(max_value) * 0.1,
-        )
-        self.fig.canvas.draw_idle()
-
-    def next_key(self, event):
-        self.index = (self.index + 1) % 4
-        self.update_plot()
-
-    def prev_key(self, event):
-        self.index = (self.index - 1) % 4
-        self.update_plot()
+        self.bprev1 = Button(axprev1, "Prev Key One")
+        self.bprev1.on_clicked(self.prev_key1)
         
-    def toggle_display_arithmancy(self, event):
-        self.display_arithmancy = not self.display_arithmancy
-        self.update_plot()
+        self.bnext2 = Button(axnext2, "Next Key Two")
+        self.bnext2.on_clicked(self.next_key2)
 
-    def create_buttons(self):
-        axprev = plt.axes([0.7, 0.01, 0.1, 0.075])
-        axnext = plt.axes([0.81, 0.01, 0.1, 0.075])
-        
-        axtoggle = plt.axes([0.1, 0.01, 0.3, 0.075])
-        
-        self.btoggle = Button(axtoggle, "Toggle Display Arithmancy")
-        self.btoggle.on_clicked(self.toggle_display_arithmancy)
-
-        self.bnext = Button(axnext, "Next")
-        self.bnext.on_clicked(self.next_key)
-
-        self.bprev = Button(axprev, "Prev")
-        self.bprev.on_clicked(self.prev_key)
+        self.bprev2 = Button(axprev2, "Prev Key Two")
+        self.bprev2.on_clicked(self.prev_key2)
 
 
 if my_len(sys.argv) < 2:
@@ -212,6 +162,6 @@ else:
             current_key_index = 0
 
             scatter_plot = ScatterPlotCourses(houses_data, keys_possible)
-            scatter_plot_house = ScatterPlotHouses(houses_data)
+            # scatter_plot_house = ScatterPlotHouses(houses_data)
 
             plt.show()

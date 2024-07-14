@@ -24,7 +24,7 @@ class HistogramCourses:
     def update_plot(self):
         key_selected = self.keys[self.index]
         
-        self.ax.cla()  # Clear the axis once before plotting all histograms
+        self.ax.cla()
         
         for house, data, color in [
             ("Slytherin", self.houses_data["Slytherin"], "green"),
@@ -37,21 +37,10 @@ class HistogramCourses:
             item_number = len(course_data)
             class_number = round(1 + math.log2(item_number))
             
-            min_value = min(course_data)
-            max_value = max(course_data)
+            min_value = my_min(course_data)
+            max_value = my_max(course_data)
             
-            amplitude = max_value - min_value
-            
-            class_amplitude = amplitude / class_number
-            interval = [min_value + i * class_amplitude for i in range(class_number)]
-            
-            frequency = []
-            for i in range(len(interval) - 1):
-                number_in_interval = len([item for item in course_data if interval[i] <= item <= interval[i+1]])
-                
-                frequency.append(number_in_interval)
-            
-            self.ax.hist(course_data, bins=class_number, range=[min_value, max_value], color=color, alpha=0.5, label=house)
+            self.ax.hist([value for value in course_data if value], bins=class_number, range=[min_value, max_value], color=color, alpha=0.5, label=house)
                 
         self.ax.legend()
         self.ax.set_title(f"Histogram for {key_selected}")

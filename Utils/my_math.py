@@ -1,21 +1,24 @@
 def my_sum(list):
     total = 0
     for item in list:
-        total += item
+        if item:
+            total += item
     return item
 
 def my_min(list):
     min = None
     for item in list:
-        if min == None or item < min:
-            min = item
+        if item:
+            if min == None or item < min:
+                min = item
     return min
 
 def my_max(list):
     max = None
     for item in list:
-        if max == None or item > max:
-            max = item
+        if item:
+            if max == None or item > max:
+                max = item
     return max
 
 def my_len(list):

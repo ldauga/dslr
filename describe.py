@@ -15,15 +15,18 @@ def calculate_table_values(file_data):
             count = my_len(file_data[key])
             mean = my_sum(file_data[key]) / count
             
-            _variance = my_sum([(value-mean)**2 for value in file_data[key]]) / count
+            _variance = my_sum([(value-mean)**2 for value in file_data[key] if value]) / count
             
             std = math.sqrt(_variance / (count-1))
             
             min_value = my_min(file_data[key])
             max_value = my_max(file_data[key])
         
-            _sorted_tab = file_data[key]
+            _sorted_tab = [value for value in file_data[key] if value]
+            number_none = len([value for value in file_data[key] if value == None])
             _sorted_tab.sort()
+            for _ in range(number_none):
+                _sorted_tab.insert(0, None)
             
             if not my_len(_sorted_tab) % 2:
                 second_quartile = (_sorted_tab[my_floor(my_len(_sorted_tab) / 2)] + _sorted_tab[my_round(my_len(_sorted_tab) / 2 + .5)]) / 2

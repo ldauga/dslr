@@ -24,7 +24,7 @@ def parse_file(file):
         line_data = line.split(',')
         for index, key in enumerate(data):
             if all((char in "-0123456789." for char in line_data[index])) and my_len((char for char in line_data[index] if char == '-')) <= 1:
-                data[key].append(float(line_data[index]) if line_data[index] else 0)
+                data[key].append(float(line_data[index]) if line_data[index] else None)
             else:
                 data[key].append(line_data[index])
     return data
