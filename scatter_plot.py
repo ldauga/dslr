@@ -95,6 +95,11 @@ class ScatterPlotCourses:
         self.ax.set_ylabel(key1_selected)
         self.fig.canvas.draw_idle()
 
+    def set_response_index(self, event):
+        self.indexKeyOne = 3
+        self.indexKeyTwo = 1
+        self.update_plot()
+
     def next_key1(self, event):
         self.indexKeyOne = (self.indexKeyOne + 1) % len(self.keys)
         if self.indexKeyOne == self.indexKeyTwo:
@@ -125,18 +130,23 @@ class ScatterPlotCourses:
         
         axprev2 = plt.axes([0.7, 0.01, 0.1, 0.075])
         axnext2 = plt.axes([0.81, 0.01, 0.1, 0.075])
-
-        self.bnext1 = Button(axnext1, "Next Key One")
-        self.bnext1.on_clicked(self.next_key1)
-
+# 
         self.bprev1 = Button(axprev1, "Prev Key One")
         self.bprev1.on_clicked(self.prev_key1)
-        
-        self.bnext2 = Button(axnext2, "Next Key Two")
-        self.bnext2.on_clicked(self.next_key2)
-
+# 
+        self.bnext1 = Button(axnext1, "Next Key One")
+        self.bnext1.on_clicked(self.next_key1)
+        # 
         self.bprev2 = Button(axprev2, "Prev Key Two")
         self.bprev2.on_clicked(self.prev_key2)
+# 
+        self.bnext2 = Button(axnext2, "Next Key Two")
+        self.bnext2.on_clicked(self.next_key2)
+        
+        axres = plt.axes([0.81, 0.99 - .075, 0.1, 0.075])
+        
+        self.bres = Button(axres, "Set Response Index")
+        self.bres.on_clicked(self.set_response_index)
 
 
 if my_len(sys.argv) < 2:
